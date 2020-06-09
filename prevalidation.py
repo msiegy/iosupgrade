@@ -49,7 +49,7 @@ def collect_getters(task):
 
 def main():
     nornir_set_creds(nr)
-    #result = nr.run(task=collect_configs)
+    result = nr.run(task=collect_configs)
     #std_print(result)
     result = nr.run(task=collect_getters)
     #facts_result = nr.run(task=napalm_get, getters=['facts', 'environment', 'lldp_neighbors'])
