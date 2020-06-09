@@ -1,0 +1,11 @@
+---
+C9300-DNA-A-24:
+  hostname: 10.83.8.142
+  groups:
+    - cisco_ios
+    - C899G
+HRN6W3-GMALAB-GW1:
+  hostname: 10.83.46.1
+  groups:
+    - cisco_ios
+    - C2900

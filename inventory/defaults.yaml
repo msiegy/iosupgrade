@@ -1,0 +1,8 @@
+---
+username: admin
+password: cisco123
+connection_options:
+  napalm:
+    extras:
+      optional_args:
+          secret: cisco123

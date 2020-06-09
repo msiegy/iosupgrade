@@ -1,0 +1,21 @@
+---
+cisco_ios:
+  platform: ios
+  username: admin
+  password: cisco123
+  #data:
+    #img: c880data-universalk9-mz.155-3.M8.bin
+    #backup_img: c880data-universalk9-mz.154-2.T1.bin
+  connection_options:
+    napalm:
+      extras:
+        optional_args:
+            secret: cisco123
+C899G:
+  data:
+    img: 899g.txt
+    backup_img:
+C2900:
+  data:
+    img: isr2900.txt
+    backup_img: c2900-universalk9-mz.SPA.157-3.M4a.bin
