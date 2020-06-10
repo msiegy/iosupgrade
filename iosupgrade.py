@@ -39,8 +39,6 @@ def set_boot_image(task):
         """
 
     # Validate that both new and existing image are on device
-    #if backup_img == 'none':   #horrible logic... if we don't have backup image, check primary twice instead of duplicating function
-        #backup_img = primary_img
     for img in (primary_img, backup_img):
         if img == 'none':
             continue
