@@ -8,6 +8,9 @@ from nornir.plugins.functions.text import print_result
 from nornir.core.filter import F
 import ipdb
 
+def prRed(skk): print("\033[91m {}\033[00m" .format(skk))
+def prYellow(skk): print("\033[93m {}\033[00m" .format(skk))
+
 #Search running configuration and return image file and directory if they exist.
 def getcurrentimage(host):
     file = 'configs/'+host+'-running.cfg'
@@ -23,7 +26,7 @@ def getcurrentimage(host):
     return {'directory': img_dir, 'backup_image': current_imgfile}
 
 def set_boot_image(task):
-    print("\nStarting process set boot image on", task.host.name)
+    #print("\nStarting process set boot image on", task.host.name)
     primary_img = task.host.get('img')
     #backup_img = task.host.get('backup_img')
     bootvars = getcurrentimage(task.host.name)
@@ -31,8 +34,8 @@ def set_boot_image(task):
     directory = bootvars['directory']
     #ipdb.set_trace()
     if backup_img == 'none':
-        print("unable to determine current image bootvar on", task.host.name)
-        print("proceeding without backup image")
+        #print("\nunable to determine current image bootvar on", task.host.name)
+        #print("\nproceeding without backup image on", task.host.name)
         commands = f"""
         default boot system
         boot system {directory} {primary_img}
@@ -47,10 +50,14 @@ def set_boot_image(task):
             command_string=f"dir flash:/{img}"
         )
         output = result[0].result
+        # detect error
+        if output.startswith("%Error"):
+            #target_routers.data.failed_hosts.add(task.host.name)
+            return False
         # Ignore the first line, since it always contains the searched for filename
         output = re.split(r"Directory of.*", output, flags=re.M)[1]
         if img not in output:
-            print("Image not found on Device -", img)
+            #print("\nImage not found on Device -", img)
             return False
 
     if backup_img != 'none':
@@ -67,7 +74,7 @@ def set_boot_image(task):
         task=netmiko_send_config,
         config_commands=command_list
     )
-    print("Completed process set boot image on", task.host.name)
+    #print("\nCompleted process set boot image on", task.host.name)
     return True
 
 def continue_func(msg="Do you want to continue (y/n)? "):
@@ -88,20 +95,25 @@ def main():
 
 
     aggr_result = target_routers.run(task=set_boot_image, num_workers=20)
+    print_result(aggr_result)
     #ipdb.set_trace()
 
+    #Check result for set_boot_image. True or False.
     for hostname, val in aggr_result.items():
         if val[0].result is False:
-            sys.exit("Setting the boot variable failed for device:", hostname)
-
+            #sys.exit("Setting the boot variable failed for device:", hostname)
+            #print("\n!!!There was an error with", hostname, "so it will be removed from further processing\n")
+            prRed("\n!!!There was an error with " + hostname + " so it will be removed from further processing\n")
+            target_routers.data.failed_hosts.add(hostname)
     #Post validation of boot statements
     result = target_routers.run(
         task=netmiko_send_command,
         command_string="show run | section boot",
-        num_workers = 20
+        name="show run | section boot",
+        num_workers=20
     )
-    print("Review currently configured boot statements")
-    std_print(result)
+    prYellow("\nReview the configured boot statements before proceeding with Write Mem\n")
+    print_result(result)
     #ipdb.set_trace()
     #After reviewing boot statements - ask to continue
     continue_func()
@@ -109,28 +121,31 @@ def main():
     # Save the configuration
     result = target_routers.run(
         task=netmiko_send_command,
-        command_string= "write mem"
+        command_string= "write mem",
+        name="Issue Write Mem"
     )
-    std_print(result)
+    print_result(result)
 
     # Reload
     continue_func(msg="Do you want to reload the device (y/n)? ")
     result = target_routers.run(
         task=netmiko_send_command,
         use_timing=True,
-        command_string="reload"
+        command_string="reload",
+        name="Issue Reload Command"
     )
-    ipdb.set_trace()
+    #ipdb.set_trace()
     # Handle reload confirmation if required
     for device_name, multi_result in result.items():
         if 'confirm' in multi_result[0].result:
             result = target_routers.run(
                 task=netmiko_send_command,
                 use_timing=True,
-                command_string="y"
+                command_string="y",
+                name="Confirm Reload with Yes"
             )
-
+    print_result(result)
     print("Devices reloaded")
-    ipdb.set_trace()
+    #ipdb.set_trace()
 if __name__ == "__main__":
     main()
