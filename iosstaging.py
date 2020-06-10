@@ -7,7 +7,7 @@
 from nornir import InitNornir
 from nornir.plugins.tasks.networking import netmiko_file_transfer
 from nornir_utilities import nornir_set_creds, std_print
-
+from nornir.core.filter import F
 
 def os_staging(task):
     file_name = task.host.get('img')
@@ -21,6 +21,7 @@ def os_staging(task):
 
 def main():
     nr = InitNornir(config_file="config.yaml")
+    nr = nr.filter(F(groups__contains="iosv"))
     nornir_set_creds(nr)
     result = nr.run(task=os_staging)
     std_print(result)
