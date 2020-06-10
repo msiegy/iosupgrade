@@ -5,17 +5,34 @@ import os
 import logging
 import pathlib
 import json
+import re
 from nornir import InitNornir
 from nornir.plugins.tasks import networking
-from nornir.plugins.tasks.networking import napalm_get
+from nornir.plugins.tasks.networking import napalm_get, netmiko_send_command
 from nornir.plugins.functions.text import print_result
 from nornir_utilities import nornir_set_creds, std_print
+from nornir.core.filter import F
 import ipdb
 
 config_dir = "configs/"
 facts_dir = "facts/"
 pathlib.Path(config_dir).mkdir(exist_ok=True)
 nr = InitNornir(config_file="config.yaml")
+nr = nr.filter(F(groups__contains="iosv"))
+
+def validate_storage(task):
+    result = task.run(
+        task=netmiko_send_command,
+        command_string="dir"
+    )
+    output = result[0].result
+    ipdb.set_trace()
+    #regex to find space available
+    p = re.compile('^(\d+) bytes total \((\d+) bytes free')
+    m = p.findall(output)
+    totalbytes = m.group(1)
+    availablebytes = m.group(2)
+
 
 def collect_configs(task):
     config_result = task.run(task=napalm_get, getters=['config'])
@@ -49,6 +66,7 @@ def collect_getters(task):
 
 def main():
     nornir_set_creds(nr)
+    result = nr.run(task=validate_storage)
     result = nr.run(task=collect_configs)
     #std_print(result)
     result = nr.run(task=collect_getters)
