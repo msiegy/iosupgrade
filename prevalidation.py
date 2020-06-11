@@ -1,6 +1,6 @@
 """
-Prevalidate and store baselines for running config and operational values prior
-to OS Staging and Upgrade
+Prevalidate storage requirements and store baselines for running config and
+operational states prior to OS Staging and Upgrade
 
 Tasks:
 1) Validate sufficient disk space based on file defined in groups.yaml
@@ -84,20 +84,28 @@ def main():
     nornir_set_creds(nr)
 
     #Connect to devices to check if there is sufficient disk space.
-    result = nr.run(task=validate_storage, name='Validate Storage Requirements')
-    for host in result:
-        if result[host][0].result:
+    storage_result = nr.run(task=validate_storage, name='Validate Storage Requirements')
+    print_result(storage_result) #potentially print only True/False Result, logfile rest of output
+    #Summarize Results of Storage validation
+    print("vvv Storage Results Summary vvv")
+    for host in storage_result:
+        if storage_result[host][0].result == True:
             print("Success - Sufficient storage available on", host)
+        elif storage_result[host][0].result == False:
+            print("Error - There is not enough space to transfer the image on", host)
         else:
-            print("!!! There is not enough space to transfer the image on", host)
-    print_result(result)
+            print("Error - An Error occured communicating with", host)
+    print("^^^ Storage Results Summary ^^^")
     #Connect to devices and store their running configurations to local folders.
+
+    print("\nCollecting running configurations and operational state from devices")
     result = nr.run(task=collect_configs)
     #std_print(result)
     #Connect to devices and collect napalm getters, store to local folders.
     result = nr.run(task=collect_getters)
     #print_result(result)
-    #ipdb.set_trace()
+    print("Running configurations and operational state have been saved to local machine")
+    ipdb.set_trace()
 
 if __name__ == "__main__":
     main()

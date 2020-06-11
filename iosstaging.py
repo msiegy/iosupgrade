@@ -1,15 +1,21 @@
 """
-    Stage IOS image for router upgrade.
-    Image transfered from Nornir system client to router.
-    Check File Hash on delivery
+    Transfer/Stage IOS image for router upgrade. Bootvars not changed.
+
+    Tasks:
+    1) Transfer image defined in groups.yaml from client to router using netmiko
+    file transfer.
+    2) Check File exists and MD5 Hash on completion.
+
     Requires user with privelge level 15 and 'ip scp server enable'
 """
 
 from nornir import InitNornir
 from nornir.plugins.tasks.networking import netmiko_file_transfer
 from nornir_utilities import nornir_set_creds, std_print
+from nornir.plugins.functions.text import print_result
 from nornir.core.filter import F
 
+#use netmiko_file_transfer function within nornir. Returns Bool for File exists && valid MD5
 def os_staging(task):
     file_name = task.host.get('img')
     result = task.run(
@@ -25,7 +31,8 @@ def main():
     nr = nr.filter(F(groups__contains="iosv"))
     nornir_set_creds(nr)
     result = nr.run(task=os_staging)
-    std_print(result)
+    print_result(result)
+    import ipdb; ipdb.set_trace()
 
 if __name__ == "__main__":
     main()
