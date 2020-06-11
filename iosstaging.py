@@ -1,6 +1,7 @@
 """
     Stage IOS image for router upgrade.
     Image transfered from Nornir system client to router.
+    Check File Hash on delivery
     Requires user with privelge level 15 and 'ip scp server enable'
 """
 

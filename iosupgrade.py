@@ -1,3 +1,13 @@
+"""
+    Get Current Image if available and set as backup image.
+    Validate that both new and existing image are on device.
+    Set boot vars so staged image is primary image.
+    User Review of newly configured Boot Vars.
+    Write Mem
+    Reload Router
+"""
+
+
 import re
 import sys
 from nornir import InitNornir
