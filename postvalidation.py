@@ -39,6 +39,7 @@ initial_facts_dir = "facts/pre/"
 nr = InitNornir(config_file="config.yaml")
 #Filter devices to run against
 nr = nr.filter(F(groups__contains="iosv"))
+nornir_set_creds(nr)
 
 resultconf = nr.run(task=collect_configs)
 resultgetters = nr.run(task=collect_getters)
