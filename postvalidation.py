@@ -67,12 +67,6 @@ def collect_getters(task):
             store_output(task.host.name, entry_dir, content, filename)
 
 
-
-
-
-
-
-
 nr = InitNornir(config_file="config.yaml")
 #Filter devices to run against
 nr = nr.filter(F(groups__contains="iosv"))
@@ -80,11 +74,11 @@ nornir_set_creds(nr)
 
 resultconf = nr.run(task=collect_configs)
 resultgetters = nr.run(task=collect_getters)
-ipdb.set_trace()
+#ipdb.set_trace()
 
 confdiff = Diff(initial_config_dir, config_dir)
 opsdiff = Diff(initial_facts_dir, facts_dir)
 
-print(confdiff)
-print(opsdiff)
+#print(confdiff)
+#print(opsdiff)
 ipdb.set_trace()
