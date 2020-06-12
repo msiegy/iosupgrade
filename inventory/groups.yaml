@@ -19,3 +19,8 @@ C2900:
   data:
     img: isr2900.txt
     backup_img: c2900-universalk9-mz.SPA.157-3.M4a.bin
+iosv:
+  data:
+    #img:  Collector-2.8.1.4-B-04.ova
+    #img: vios-adventerprisek9-m.vmdk.SPA.155-3.M
+    img: iosv-fakeimg.txt
