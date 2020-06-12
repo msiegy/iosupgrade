@@ -61,9 +61,7 @@ def collect_getters(task):
     for entry in facts_result.result.keys():
         for getter in facts_result:
             filename = entry
-            #content = getter.result[entry]
             content = json.dumps(getter.result[entry], indent=2)
-
             store_output(task.host.name, entry_dir, content, filename)
 
 
@@ -74,7 +72,6 @@ nornir_set_creds(nr)
 
 resultconf = nr.run(task=collect_configs)
 resultgetters = nr.run(task=collect_getters)
-#ipdb.set_trace()
 
 #Perform a Diff between the pre and post nornir getter files we saved.
 for host in nr.inventory.hosts:
@@ -94,6 +91,3 @@ for host in nr.inventory.hosts:
             compare.findDiff()
             print('#', filename, '#\n', compare)
         print("^^^ --", host, "--- End Comparison between Pre Upgrade and Post Upgrade operational values ^^^\n")
-
-
-ipdb.set_trace()
