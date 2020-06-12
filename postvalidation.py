@@ -76,6 +76,7 @@ resultconf = nr.run(task=collect_configs)
 resultgetters = nr.run(task=collect_getters)
 #ipdb.set_trace()
 
+#Perform a Diff between the pre and post nornir getter files we saved.
 for host in nr.inventory.hosts:
     #dont try to open files or compare if a host failed collection
     if host in resultconf.failed_hosts or host in resultgetters.failed_hosts:
