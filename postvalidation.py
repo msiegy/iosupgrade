@@ -33,7 +33,7 @@ facts_dir = "facts/post/"
 pathlib.Path(config_dir).mkdir(exist_ok=True)
 
 #set directories for previously gathered op stats and config
-intial_config_dir = "configs/pre/"
+initial_config_dir = "configs/pre/"
 initial_facts_dir = "facts/pre/"
 
 nr = InitNornir(config_file="config.yaml")
