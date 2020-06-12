@@ -22,7 +22,7 @@ from nornir.plugins.functions.text import print_result
 from nornir_utilities import nornir_set_creds, std_print
 from nornir.core.filter import F
 import ipdb
-from prevalidation import collect_configs, collect_getters, store_output, store_config
+#from prevalidation import collect_configs, collect_getters, store_output, store_config
 from genie.conf import Genie
 from genie.utils.config import Config
 from genie.utils.diff import Diff
@@ -35,6 +35,43 @@ pathlib.Path(facts_dir).mkdir(exist_ok=True)
 #set directories for previously gathered op stats and config
 initial_config_dir = "configs/pre/"
 initial_facts_dir = "facts/pre/"
+
+def collect_configs(task):
+    config_result = task.run(task=napalm_get, getters=['config'])
+    config = config_result[0].result['config']['running']
+    store_config(task.host.name, config)
+
+def store_config(hostname, config):
+    filename = f"{hostname}-running.cfg"
+    with open(os.path.join(config_dir, filename), "w") as f:
+        f.write(config)
+
+def store_output(hostname, entry_dir, content, filename):
+    filename = f"{filename}.txt"
+    with open(os.path.join(entry_dir, filename), "w") as f:
+        f.write(str(content))
+
+def collect_getters(task):
+    entry_dir = facts_dir + task.host.name
+    pathlib.Path(facts_dir).mkdir(exist_ok=True)
+    pathlib.Path(entry_dir).mkdir(exist_ok=True)
+
+    facts_result = task.run(task=napalm_get, getters=['facts', 'environment', 'lldp_neighbors', 'interfaces'])
+
+    for entry in facts_result.result.keys():
+        for getter in facts_result:
+            filename = entry
+            #content = getter.result[entry]
+            content = json.dumps(getter.result[entry], indent=2)
+
+            store_output(task.host.name, entry_dir, content, filename)
+
+
+
+
+
+
+
 
 nr = InitNornir(config_file="config.yaml")
 #Filter devices to run against
