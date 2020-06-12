@@ -32,7 +32,7 @@ def main():
     nornir_set_creds(nr)
     result = nr.run(task=os_staging)
     print_result(result)
-    import ipdb; ipdb.set_trace()
+    #import ipdb; ipdb.set_trace()
 
 if __name__ == "__main__":
     main()
