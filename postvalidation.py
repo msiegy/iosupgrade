@@ -23,6 +23,30 @@ from nornir_utilities import nornir_set_creds, std_print
 from nornir.core.filter import F
 import ipdb
 from prevalidation import collect_configs, collect_getters, store_output, store_config
+from genie.conf import Genie
+from genie.utils.config import Config
+from genie.utils.diff import Diff
+
 
 config_dir = "configs/post/"
 facts_dir = "facts/post/"
+pathlib.Path(config_dir).mkdir(exist_ok=True)
+
+#set directories for previously gathered op stats and config
+intial_config_dir = "configs/pre/"
+initial_facts_dir = "facts/pre/"
+
+nr = InitNornir(config_file="config.yaml")
+#Filter devices to run against
+nr = nr.filter(F(groups__contains="iosv"))
+
+resultconf = nr.run(task=collect_configs)
+resultgetters = nr.run(task=collect_getters)
+
+
+confdiff = Diff(initial_config_dir, config_dir)
+opsdiff = Diff(initial_facts_dir, facts_dir)
+
+print(confdiff)
+print(opsdiff)
+ipdb.set_trace()
