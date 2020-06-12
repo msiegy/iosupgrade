@@ -76,9 +76,23 @@ resultconf = nr.run(task=collect_configs)
 resultgetters = nr.run(task=collect_getters)
 #ipdb.set_trace()
 
-confdiff = Diff(initial_config_dir, config_dir)
-opsdiff = Diff(initial_facts_dir, facts_dir)
+for host in nr.inventory.hosts:
+    #dont try to open files or compare if a host failed collection
+    if host in resultconf.failed_hosts or host in resultgetters.failed_hosts:
+        print('!', host, 'failed collection and Op State will not be compared\n')
+        continue
+    else:
+        #load facts in hosts pre and post folder and store to var. since were not using pyats native learn objects we must loop through files
+        print("vvv --", host, "--- Begin Comparison between Pre Upgrade and Post Upgrade operational values vvv")
+        for filename in os.listdir(initial_facts_dir+host):
+            with open(initial_facts_dir+host+'/'+filename, 'r') as f:
+                initialstate = json.load(f)
+            with open(facts_dir+host+'/'+filename, 'r') as f:
+                poststate = json.load(f)
+            compare = Diff(initialstate, poststate)
+            compare.findDiff()
+            print('#', filename, '#\n', compare)
+        print("^^^ --", host, "--- End Comparison between Pre Upgrade and Post Upgrade operational values ^^^\n")
 
-#print(confdiff)
-#print(opsdiff)
+
 ipdb.set_trace()
