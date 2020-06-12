@@ -70,13 +70,13 @@ def collect_getters(task):
     pathlib.Path(entry_dir).mkdir(exist_ok=True)
 
     facts_result = task.run(task=napalm_get, getters=['facts', 'environment', 'lldp_neighbors', 'interfaces'])
-    #ipdb.set_trace()
+
     for entry in facts_result.result.keys():
         for getter in facts_result:
             filename = entry
             #content = getter.result[entry]
             content = json.dumps(getter.result[entry], indent=2)
-            #ipdb.set_trace()
+
             store_output(task.host.name, entry_dir, content, filename)
 
 def main():
@@ -105,7 +105,7 @@ def main():
     result = nr.run(task=collect_getters)
     #print_result(result)
     print("Running configurations and operational state have been saved to local machine")
-    ipdb.set_trace()
+    #ipdb.set_trace()
 
 if __name__ == "__main__":
     main()
