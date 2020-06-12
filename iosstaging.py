@@ -3,7 +3,7 @@
 
     Tasks:
     1) Transfer image defined in groups.yaml from client to router using netmiko
-    file transfer.
+    file transfer. Idempotent transfer.
     2) Check File exists and MD5 Hash on completion.
 
     Requires user with privelge level 15 and 'ip scp server enable'

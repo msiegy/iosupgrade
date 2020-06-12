@@ -1,10 +1,14 @@
 """
-    Get Current Image if available and set as backup image.
-    Validate that both new and existing image are on device.
-    Set boot vars so staged image is primary image.
-    User Review of newly configured Boot Vars.
-    Write Mem
-    Reload Router
+    Update bootvars and perform IOS Upgrade.
+
+    Tasks:
+    1) Check if current image is defined in bootvars so we can set as backup.
+    2) Validate that both new and existing/backup image are on device.
+    3) Set boot vars so new image is primary image, previous is backup.
+    4) Output new Boot Config and Prompt for user review before continuuing
+    5) Write Mem
+    6) Reload Router
+
 """
 
 
@@ -112,8 +116,8 @@ def main():
     for hostname, val in aggr_result.items():
         if val[0].result is False:
             #sys.exit("Setting the boot variable failed for device:", hostname)
-            #print("\n!!!There was an error with", hostname, "so it will be removed from further processing\n")
             prRed("\n!!!There was an error with " + hostname + " so it will be removed from further processing\n")
+            #Add device to failed inventory to prevent future processing in tasks... (poor design)
             target_routers.data.failed_hosts.add(hostname)
     #Post validation of boot statements
     result = target_routers.run(

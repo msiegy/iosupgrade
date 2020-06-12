@@ -1,11 +1,11 @@
 """
-Prevalidate storage requirements and store baselines for running config and
-operational states prior to OS Staging and Upgrade
+    Prevalidate storage requirements and store baselines for running config and
+    operational states prior to OS Staging and Upgrade
 
-Tasks:
-1) Validate sufficient disk space based on file defined in groups.yaml
-2) Collect and store running configurations to local machine.
-3) Collect and store napalm getters to local machine.
+    Tasks:
+    1) Validate sufficient disk space based on file defined in groups.yaml
+    2) Collect and store running configurations to local machine.
+    3) Collect and store napalm getters to local machine.
 """
 
 import os
@@ -21,8 +21,8 @@ from nornir_utilities import nornir_set_creds, std_print
 from nornir.core.filter import F
 import ipdb
 
-config_dir = "configs/"
-facts_dir = "facts/"
+config_dir = "configs/pre/"
+facts_dir = "facts/pre/"
 pathlib.Path(config_dir).mkdir(exist_ok=True)
 nr = InitNornir(config_file="config.yaml")
 #Filter devices to run against
