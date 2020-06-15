@@ -6,11 +6,6 @@ cisco_ios:
   #data:
     #img: c880data-universalk9-mz.155-3.M8.bin
     #backup_img: c880data-universalk9-mz.154-2.T1.bin
-  connection_options:
-    napalm:
-      extras:
-        optional_args:
-            secret: cisco123
 C899G:
   data:
     img: 899g.txt
@@ -24,3 +19,11 @@ iosv:
     #img:  Collector-2.8.1.4-B-04.ova
     #img: vios-adventerprisek9-m.vmdk.SPA.155-3.M
     img: iosv-fakeimg.txt
+  connection_options:
+    napalm:
+      extras:
+        optional_args:
+            secret: cisco123
+    netmiko:
+      extras:
+        secret: cisco123

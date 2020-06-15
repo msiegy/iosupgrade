@@ -31,7 +31,8 @@ nr = nr.filter(F(groups__contains="iosv"))
 def validate_storage(task):
     result = task.run(
         task=netmiko_send_command,
-        command_string="dir"
+        command_string="dir",
+        enable=True
     )
     output = result[0].result
 

@@ -6,7 +6,8 @@
     file transfer. Idempotent transfer.
     2) Check File exists and MD5 Hash on completion.
 
-    Requires user with privelge level 15 and 'ip scp server enable'
+    Requires user with privelge level 15 (without enable) and 'ip scp server enable'
+
 """
 
 from nornir import InitNornir

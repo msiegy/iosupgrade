@@ -6,3 +6,6 @@ connection_options:
     extras:
       optional_args:
           secret: cisco123
+  netmiko:
+    extras:
+      secret: cisco123

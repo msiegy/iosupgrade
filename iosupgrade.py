@@ -27,7 +27,7 @@ def prYellow(skk): print("\033[93m {}\033[00m" .format(skk))
 
 #Search running configuration and return image file and directory if they exist.
 def getcurrentimage(host):
-    file = 'configs/'+host+'-running.cfg'
+    file = 'configs/pre/'+host+'-running.cfg'
     parse = CiscoConfParse(file, syntax='ios')
     bootstatement = parse.find_objects(r'boot system')
     if not bootstatement:
@@ -61,9 +61,11 @@ def set_boot_image(task):
             continue
         result = task.run(
             task=netmiko_send_command,
-            command_string=f"dir flash:/{img}"
+            command_string=f"dir flash:/{img}",
+            enable=True
         )
         output = result[0].result
+
         # detect error
         if output.startswith("%Error"):
             #target_routers.data.failed_hosts.add(task.host.name)
@@ -128,7 +130,6 @@ def main():
     )
     prYellow("\nReview the configured boot statements before proceeding with Write Mem\n")
     print_result(result)
-    #ipdb.set_trace()
     #After reviewing boot statements - ask to continue
     continue_func()
 
@@ -136,7 +137,7 @@ def main():
     result = target_routers.run(
         task=netmiko_send_command,
         command_string= "write mem",
-        name="Issue Write Mem"
+        name="Issue Write Mem",
     )
     print_result(result)
 
@@ -146,9 +147,9 @@ def main():
         task=netmiko_send_command,
         use_timing=True,
         command_string="reload",
-        name="Issue Reload Command"
+        name="Issue Reload Command",
     )
-    #ipdb.set_trace()
+    #import ipdb; ipdb.set_trace()
     # Handle reload confirmation if required
     for device_name, multi_result in result.items():
         if 'confirm' in multi_result[0].result:
@@ -156,7 +157,7 @@ def main():
                 task=netmiko_send_command,
                 use_timing=True,
                 command_string="y",
-                name="Confirm Reload with Yes"
+                name="Confirm Reload with Yes",
             )
     print_result(result)
     print("Devices reloaded")
