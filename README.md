@@ -14,4 +14,4 @@ The collection uses Nornir, Napalm and Genie libraries.
     Update bootvars and perform IOS upgrade with reload.
     
 #### postvalidation.py
-    Post Upgrade validation - Collect and store current running config and operational states and compare diffs.
+    Post Upgrade validation - Collect and store current running config and operational states then compare diffs with earlier collection.
