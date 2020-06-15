@@ -1,5 +1,5 @@
 """
-    Transfer/Stage IOS image for router upgrade. Bootvars not changed.
+    Transfer/Stage IOS image for router upgrade and validate MD5. Bootvars not changed.
 
     Tasks:
     1) Transfer image defined in groups.yaml from client to router using netmiko
