@@ -8,8 +8,7 @@ TermServer-4221:
   hostname: 10.83.46.149
   groups:
     - cisco_ios
-    - C2900
-    - iosv
+    - isr
 C9300-DNA-A-24:
   hostname: 10.83.8.142
   groups:
@@ -19,14 +18,14 @@ Router1:
   hostname: 10.83.8.165
   groups:
     - cisco_ios
-    #- iosv
+    - iosv
 Router2:
   hostname: 10.83.8.172
   groups:
     - cisco_ios
-    #- iosv
+    - iosv
 Router3:
   hostname: 10.83.8.173
   groups:
     - cisco_ios
-    #- iosv
+    - iosv
