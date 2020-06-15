@@ -1,5 +1,5 @@
 # iosupgrade
-iosupgrade is a work in progress. It features a collection of python scripts to help automate the image transfer and software upgrade process for IOS devices including the pre and post validation steps.
+iosupgrade is a work in progress. It features a collection of python scripts to help automate the image transfer and software upgrade process for IOS routers including the pre and post validation steps.
 The collection uses Nornir, Napalm and Genie libraries.
 
 
