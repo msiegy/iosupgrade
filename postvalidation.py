@@ -72,6 +72,7 @@ nornir_set_creds(nr)
 
 resultconf = nr.run(task=collect_configs)
 resultgetters = nr.run(task=collect_getters)
+import ipdb; ipdb.set_trace()
 
 #Perform a Diff between the pre and post nornir getter files we saved.
 for host in nr.inventory.hosts:
