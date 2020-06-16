@@ -23,6 +23,7 @@ import ipdb
 
 config_dir = "configs/pre/"
 facts_dir = "facts/pre/"
+pathlib.Path('configs').mkdir(exist_ok=True)
 pathlib.Path(config_dir).mkdir(exist_ok=True)
 nr = InitNornir(config_file="config.yaml")
 #Filter devices to run against
