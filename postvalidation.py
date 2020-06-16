@@ -30,8 +30,8 @@ from genie.utils.diff import Diff
 
 config_dir = "configs/post/"
 facts_dir = "facts/post/"
-pathlib.Path(config_dir).mkdir(exist_ok=True)
-pathlib.Path(facts_dir).mkdir(exist_ok=True)
+pathlib.Path(config_dir).mkdir(parent=True, exist_ok=True)
+pathlib.Path(facts_dir).mkdir(parent=True, exist_ok=True)
 #set directories for previously gathered op stats and config
 initial_config_dir = "configs/pre/"
 initial_facts_dir = "facts/pre/"
