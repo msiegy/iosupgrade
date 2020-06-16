@@ -23,7 +23,7 @@ import ipdb
 
 config_dir = "configs/pre/"
 facts_dir = "facts/pre/"
-#pathlib.Path('configs').mkdir(exist_ok=True)
+
 pathlib.Path(config_dir).mkdir(parents=True, exist_ok=True)
 nr = InitNornir(config_file="config.yaml")
 #Filter devices to run against
@@ -44,7 +44,7 @@ def validate_storage(task):
     #check planned imaged size against space available
     file_name = task.host.get('img')
     #retrieve file size in bytes
-    #insert try/catch for if file exists
+    #insert try/catch for if file exists - if file !exist exit with error
     file_size = os.stat(file_name).st_size
 
     if file_size >= availablebytes:
@@ -69,7 +69,7 @@ def store_output(hostname, entry_dir, content, filename):
 
 def collect_getters(task):
     entry_dir = facts_dir + task.host.name
-    pathlib.Path(facts_dir).mkdir(exist_ok=True)
+    pathlib.Path(facts_dir).mkdir(parents=True, exist_ok=True)
     pathlib.Path(entry_dir).mkdir(exist_ok=True)
 
     facts_result = task.run(task=napalm_get, getters=['facts', 'environment', 'lldp_neighbors', 'interfaces'])
