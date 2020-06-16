@@ -23,8 +23,8 @@ import ipdb
 
 config_dir = "configs/pre/"
 facts_dir = "facts/pre/"
-pathlib.Path('configs').mkdir(exist_ok=True)
-pathlib.Path(config_dir).mkdir(exist_ok=True)
+#pathlib.Path('configs').mkdir(exist_ok=True)
+pathlib.Path(config_dir).mkdir(parents=True, exist_ok=True)
 nr = InitNornir(config_file="config.yaml")
 #Filter devices to run against
 nr = nr.filter(F(groups__contains="iosv"))
