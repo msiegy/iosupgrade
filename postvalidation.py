@@ -22,7 +22,7 @@ from nornir.plugins.functions.text import print_result
 from nornir_utilities import nornir_set_creds, std_print
 from nornir.core.filter import F
 import ipdb
-#from prevalidation import collect_configs, collect_getters, store_output, store_config
+from prevalidation import collect_configs, collect_getters, store_output, store_config
 from genie.conf import Genie
 from genie.utils.config import Config
 from genie.utils.diff import Diff
@@ -72,7 +72,11 @@ nornir_set_creds(nr)
 
 resultconf = nr.run(task=collect_configs)
 resultgetters = nr.run(task=collect_getters)
-import ipdb; ipdb.set_trace()
+#import ipdb; ipdb.set_trace()
+
+#Loop through napalm getters and output current running version.
+for host in resultgetters:
+    print(host, '>>', resultgetters[host][1].result['facts']['os_version'])
 
 #Perform a Diff between the pre and post nornir getter files we saved.
 for host in nr.inventory.hosts:
