@@ -43,6 +43,7 @@ def validate_storage(task):
     #check planned imaged size against space available
     file_name = task.host.get('img')
     #retrieve file size in bytes
+    #insert try/catch for if file exists
     file_size = os.stat(file_name).st_size
 
     if file_size >= availablebytes:
@@ -95,7 +96,7 @@ def main():
         elif storage_result[host][0].result == False:
             print("Error - There is not enough space to transfer the image on", host)
         else:
-            print("Error - An Error occured communicating with", host)
+            print("Error - An Error occured with", host)
     print("^^^ Storage Results Summary ^^^")
     #Connect to devices and store their running configurations to local folders.
 
