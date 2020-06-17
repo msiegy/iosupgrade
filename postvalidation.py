@@ -27,6 +27,9 @@ from genie.conf import Genie
 from genie.utils.config import Config
 from genie.utils.diff import Diff
 
+def prRed(skk): print("\033[91m {}\033[00m" .format(skk))
+def prYellow(skk): print("\033[93m {}\033[00m" .format(skk))
+def prGreen(skk): print("\033[92m {}\033[00m" .format(skk))
 
 config_dir = "configs/post/"
 facts_dir = "facts/post/"
@@ -35,6 +38,7 @@ pathlib.Path(facts_dir).mkdir(parents=True, exist_ok=True)
 #set directories for previously gathered op stats and config
 initial_config_dir = "configs/pre/"
 initial_facts_dir = "facts/pre/"
+
 
 def collect_configs(task):
     config_result = task.run(task=napalm_get, getters=['config'])
@@ -68,7 +72,7 @@ def collect_getters(task):
 nr = InitNornir(config_file="config.yaml")
 #Filter devices to run against
 nr = nr.filter(F(groups__contains="iosv"))
-print('Running iosstaging.py against the following Nornir inventory hosts:', nr.inventory.hosts.keys())
+print('Running postvalidaiton.py against the following Nornir inventory hosts:', nr.inventory.hosts.keys())
 # Ask for credentials at runtime instead of storing.
 nornir_set_creds(nr)
 
@@ -77,7 +81,7 @@ resultgetters = nr.run(task=collect_getters)
 #import ipdb; ipdb.set_trace()
 
 #Loop through napalm getters and output current running version.
-print('Current IOS Running Versions:')
+prYellow('Current IOS Running Versions:')
 for host in resultgetters:
     print(host, '>>', resultgetters[host][1].result['facts']['os_version'])
 
@@ -89,7 +93,7 @@ for host in nr.inventory.hosts:
         continue
     else:
         #load facts in hosts pre and post folder and store to var. since were not using pyats native learn objects we must loop through files
-        print("vvv --", host, "--- Begin Comparison between Pre Upgrade and Post Upgrade operational values vvv")
+        prGreen("vvv --", host, "--- Begin Comparison between Pre Upgrade and Post Upgrade operational values vvv")
         for filename in os.listdir(initial_facts_dir+host):
             with open(initial_facts_dir+host+'/'+filename, 'r') as f:
                 initialstate = json.load(f)
@@ -98,4 +102,4 @@ for host in nr.inventory.hosts:
             compare = Diff(initialstate, poststate)
             compare.findDiff()
             print('#', filename, '#\n', compare)
-        print("^^^ --", host, "--- End Comparison between Pre Upgrade and Post Upgrade operational values ^^^\n")
+        prGreen("^^^ --", host, "--- End Comparison between Pre Upgrade and Post Upgrade operational values ^^^\n")
