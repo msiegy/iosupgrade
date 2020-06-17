@@ -60,7 +60,7 @@ def collect_getters(task):
     pathlib.Path(facts_dir).mkdir(exist_ok=True)
     pathlib.Path(entry_dir).mkdir(exist_ok=True)
 
-    facts_result = task.run(task=napalm_get, getters=['facts', 'environment', 'lldp_neighbors', 'interfaces'])
+    facts_result = task.run(task=napalm_get, getters=['facts', 'environment', 'lldp_neighbors', 'interfaces', 'interfaces_ip', 'network_instances'])
 
     for entry in facts_result.result.keys():
         for getter in facts_result:
