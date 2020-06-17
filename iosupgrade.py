@@ -6,8 +6,8 @@
     2) Validate that both new and existing/backup image are on device.
     3) Set boot vars so new image is primary image, previous is backup.
     4) Output new Boot Config and Prompt for user review before continuuing
-    5) Write Mem
-    6) Reload Router
+    5) Write Mem (Confirm)
+    6) Reload Router (Confirm)
 
 """
 
@@ -32,22 +32,22 @@ def getcurrentimage(host):
     bootstatement = parse.find_objects(r'boot system')
     if not bootstatement:
         return {'directory': 'flash', 'backup_image': 'none'}
-    #ipdb.set_trace()
+
     img_dir = bootstatement[0].re_match(r'(\S+)\:\S+', default='flash')
     current_imgfile = bootstatement[0].re_match(r'\:(\S+)\.bin', default='none')
     current_imgfile = current_imgfile + '.bin'
-    #ipdb.set_trace()
+
     return {'directory': img_dir, 'backup_image': current_imgfile}
 
 def set_boot_image(task):
-    #print("\nStarting process set boot image on", task.host.name)
     primary_img = task.host.get('img')
     #backup_img = task.host.get('backup_img')
     bootvars = getcurrentimage(task.host.name)
     backup_img = bootvars['backup_image']
     directory = bootvars['directory']
-    #ipdb.set_trace()
-    if backup_img == 'none':
+    print(backup_img)
+
+    if backup_img == 'none.bin':
         #print("\nunable to determine current image bootvar on", task.host.name)
         #print("\nproceeding without backup image on", task.host.name)
         commands = f"""
@@ -57,7 +57,9 @@ def set_boot_image(task):
 
     # Validate that both new and existing image are on device
     for img in (primary_img, backup_img):
-        if img == 'none':
+        #print(img)
+        if img == 'none.bin':
+            #print("backup_img == none, skipping loop")
             continue
         result = task.run(
             task=netmiko_send_command,
@@ -76,16 +78,15 @@ def set_boot_image(task):
             #print("\nImage not found on Device -", img)
             return False
 
-    if backup_img != 'none':
+    if backup_img != 'none.bin':
         commands = f"""
         default boot system
         boot system {directory} {primary_img}
         boot system {directory} {backup_img}
         """
 
-    #ipdb.set_trace()
     command_list = commands.strip().splitlines()
-    #ipdb.set_trace()
+
     result = task.run(
         task=netmiko_send_config,
         config_commands=command_list
@@ -102,17 +103,16 @@ def continue_func(msg="Do you want to continue (y/n)? "):
 
 def main():
     nr = InitNornir(config_file="config.yaml")
-    nornir_set_creds(nr)
-
     #filter to one device
     #target_routers = nr.filter(hostname='10.83.46.1')
     target_routers = nr.filter(F(groups__contains="iosv"))
     print('Running iosupgrade.py against the following Nornir inventory hosts:', target_routers.inventory.hosts.keys())
 
+    # Ask for credentials at runtime instead of storing.
+    nornir_set_creds(nr)
 
     aggr_result = target_routers.run(task=set_boot_image, num_workers=20)
     print_result(aggr_result)
-    #ipdb.set_trace()
 
     #Check result for set_boot_image. True or False.
     for hostname, val in aggr_result.items():
