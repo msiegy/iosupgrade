@@ -93,7 +93,7 @@ for host in nr.inventory.hosts:
         continue
     else:
         #load facts in hosts pre and post folder and store to var. since were not using pyats native learn objects we must loop through files
-        prGreen("vvv --", host, "--- Begin Comparison between Pre Upgrade and Post Upgrade operational values vvv")
+        prGreen("vvv --- " + host + " --- Begin Comparison between Pre Upgrade and Post Upgrade operational values vvv")
         for filename in os.listdir(initial_facts_dir+host):
             with open(initial_facts_dir+host+'/'+filename, 'r') as f:
                 initialstate = json.load(f)
@@ -102,4 +102,4 @@ for host in nr.inventory.hosts:
             compare = Diff(initialstate, poststate)
             compare.findDiff()
             print('#', filename, '#\n', compare)
-        prGreen("^^^ --", host, "--- End Comparison between Pre Upgrade and Post Upgrade operational values ^^^\n")
+        prGreen("^^^ ---" + host + "--- End Comparison between Pre Upgrade and Post Upgrade operational values ^^^\n")
