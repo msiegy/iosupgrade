@@ -1,3 +1,5 @@
+"""courtesy of Kirk Beyers https://github.com/ktbyers/nornir_test/blob/master/nornir_test/nornir_utilities.py"""
+
 from getpass import getpass
 from pprint import pprint
 
