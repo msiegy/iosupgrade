@@ -7,6 +7,8 @@ The collection uses Nornir, Napalm and Genie libraries.
     Prevalidate storage requirements and store baselines for running config and operational states prior
     to OS Staging and Upgrade
     
+    ![](prevalidation.gif)
+    
 #### iosstaging.py
     Transfer/Stage IOS image for router upgrade and validate MD5. Bootvars not changed.
     
@@ -15,3 +17,12 @@ The collection uses Nornir, Napalm and Genie libraries.
     
 #### postvalidation.py
     Post Upgrade validation - Collect and store current running config and operational states then compare diffs with earlier collection.
+  
+![](prevalidation.gif)
+
+## TODO:
+- Refactor four scripts into single command line tool with argument for various stages and options.
+- Add color formatting to output.
+- Add logfile along with output for each run
+- Add default enforcement for order of execution, with ability to bypass (i.e: prevalidation before upgrade)
+- args for verbose modes during execution
