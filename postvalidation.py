@@ -102,4 +102,4 @@ for host in nr.inventory.hosts:
             compare = Diff(initialstate, poststate)
             compare.findDiff()
             print('#', filename, '#\n', compare)
-        prGreen("^^^ ---" + host + "--- End Comparison between Pre Upgrade and Post Upgrade operational values ^^^\n")
+        prGreen("^^^ --- " + host + " --- End Comparison between Pre Upgrade and Post Upgrade operational values ^^^\n")
