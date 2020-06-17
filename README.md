@@ -32,6 +32,6 @@ The collection uses Nornir, Napalm and Genie libraries.
 - Add args for verbose modes during execution
 
 #### Installation:
-Clone this Repo to your local machine `https://github.com/msiegy/iosupgrade.git`
-Install required python libraries (consider using venv) `pip install -r requirements.txt`
+- Clone this Repo to your local machine `https://github.com/msiegy/iosupgrade.git`
+- Install required python libraries (consider using venv) `pip install -r requirements.txt`
 
