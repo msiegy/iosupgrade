@@ -2,7 +2,6 @@
 iosupgrade is a work in progress. It features a collection of python scripts to help automate the image transfer and software upgrade process for IOS routers including the pre and post validation steps. Future versions will feature a single commandline tool.
 The collection uses Nornir, Napalm and Genie libraries.
 
-
 #### prevalidation.py
     Prevalidate storage requirements and store baselines for running config and operational states prior
     to OS Staging and Upgrade
@@ -31,3 +30,8 @@ The collection uses Nornir, Napalm and Genie libraries.
 - Add logfile along with output for each run
 - Add default enforcement for order of execution, with ability to bypass (i.e: prevalidation before upgrade)
 - Add args for verbose modes during execution
+
+#### Installation:
+Clone this Repo to your local machine `https://github.com/msiegy/iosupgrade.git`
+Install required python libraries (consider using venv) `pip install -r requirements.txt`
+
