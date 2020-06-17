@@ -45,7 +45,7 @@ def set_boot_image(task):
     bootvars = getcurrentimage(task.host.name)
     backup_img = bootvars['backup_image']
     directory = bootvars['directory']
-    print(backup_img)
+    #print(backup_img)
 
     if backup_img == 'none.bin':
         #print("\nunable to determine current image bootvar on", task.host.name)
