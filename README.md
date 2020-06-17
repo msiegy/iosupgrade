@@ -34,4 +34,8 @@ The collection uses Nornir, Napalm and Genie libraries.
 #### Installation:
 - Clone this Repo to your local machine `https://github.com/msiegy/iosupgrade.git`
 - Install required python libraries (consider using venv) `pip install -r requirements.txt`
+- Edit the hosts.yaml and groups.yaml nornir inventory files to include your target routers and the location of the upgrade image.
+- Edit each python script file to match the nornir filter to your target device groups. Ex: `nr = nr.filter(F(groups__contains="iosv"))`
+
+Disclaimer: These scripts will reload devices and may cause network outages. They are provided AS IS. Test them in a lab and run them at your own risk.
 
