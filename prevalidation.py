@@ -6,6 +6,7 @@
     1) Validate sufficient disk space based on file defined in groups.yaml
     2) Collect and store running configurations to local machine.
     3) Collect and store napalm getters to local machine.
+
 """
 
 import os
@@ -83,9 +84,10 @@ def collect_getters(task):
             store_output(task.host.name, entry_dir, content, filename)
 
 def main():
+    print('Running prevalidation.py against the following Nornir inventory hosts:', nr.inventory.hosts.keys())
+
     # Ask for credentials at runtime instead of storing.
     nornir_set_creds(nr)
-
     #Connect to devices to check if there is sufficient disk space.
     storage_result = nr.run(task=validate_storage, name='Validate Storage Requirements')
     print_result(storage_result) #potentially print only True/False Result, logfile rest of output

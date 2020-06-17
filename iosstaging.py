@@ -4,7 +4,7 @@
     Tasks:
     1) Transfer image defined in groups.yaml from client to router using netmiko
     file transfer. Idempotent transfer.
-    2) Check File exists and MD5 Hash on completion.
+    2) Check File exists and MD5 Hash on completion. if file exists valueerror.
 
     Requires user with privelge level 15 (without enable) and 'ip scp server enable'
 
@@ -30,6 +30,7 @@ def os_staging(task):
 def main():
     nr = InitNornir(config_file="config.yaml")
     nr = nr.filter(F(groups__contains="iosv"))
+    print('Running iosstaging.py against the following Nornir inventory hosts:', nr.inventory.hosts.keys())
     nornir_set_creds(nr)
     result = nr.run(task=os_staging)
     print_result(result)

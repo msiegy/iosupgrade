@@ -68,6 +68,8 @@ def collect_getters(task):
 nr = InitNornir(config_file="config.yaml")
 #Filter devices to run against
 nr = nr.filter(F(groups__contains="iosv"))
+print('Running iosstaging.py against the following Nornir inventory hosts:', nr.inventory.hosts.keys())
+# Ask for credentials at runtime instead of storing.
 nornir_set_creds(nr)
 
 resultconf = nr.run(task=collect_configs)
@@ -75,6 +77,7 @@ resultgetters = nr.run(task=collect_getters)
 #import ipdb; ipdb.set_trace()
 
 #Loop through napalm getters and output current running version.
+print('Current IOS Running Versions:')
 for host in resultgetters:
     print(host, '>>', resultgetters[host][1].result['facts']['os_version'])
 
