@@ -17,14 +17,19 @@ Router1:
   hostname: 10.83.8.165
   groups:
     - cisco_ios
-    - iosv
+    #- iosv
 Router2:
   hostname: 10.83.8.172
   groups:
     - cisco_ios
-    - iosv
+    #- iosv
 Router3:
   hostname: 10.83.8.173
+  groups:
+    - cisco_ios
+    #- iosv
+C899G-LTE:
+  hostname: 192.168.1.46
   groups:
     - cisco_ios
     - iosv
