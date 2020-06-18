@@ -106,7 +106,7 @@ for host in nr.inventory.hosts:
         prGreen("^^^ --- " + host + " --- End Comparison between Pre Upgrade and Post Upgrade operational values ^^^\n")
 
         prGreen("vvv --- " + host + " --- Begin Comparison between Pre Upgrade and Post Upgrade configurations vvv")
-        for filename in os.listdir(initial_config_dir+host):
+        for filename in os.listdir(initial_config_dir):
             with open(initial_facts_dir+host+'/'+filename, 'r') as f:
                 cfg = f.read()
             initialconfig = Config(cfg)

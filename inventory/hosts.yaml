@@ -29,7 +29,7 @@ Router3:
     - cisco_ios
     #- iosv
 C899G-LTE:
-  hostname: 192.168.1.47
+  hostname: 192.168.1.48
   groups:
     - cisco_ios
     - iosv
