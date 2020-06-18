@@ -90,6 +90,7 @@ for host in nr.inventory.hosts:
     #dont try to open files or compare if a host failed collection
     if host in resultconf.failed_hosts or host in resultgetters.failed_hosts:
         print('!', host, 'failed collection and Op State will not be compared\n')
+        #TODO: log netmiko/nornir error to file...
         continue
     else:
         #load facts in hosts pre and post folder and store to var. since were not using pyats native learn objects we must loop through files
