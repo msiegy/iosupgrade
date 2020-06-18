@@ -40,4 +40,4 @@ The collection uses Nornir, Napalm and Genie libraries.
 
 Disclaimer: These scripts will reload devices and may cause network outages. They are provided AS IS. Test them in a lab and run them at your own risk.
 
-Tested against physical ISR routers (G2/1K/4K) and virtual IOSv platforms. These scripts are unlikely to work against switches and other hardware families.
+Tested against physical ISR routers (G2/1K/4K), C899G and virtual IOSv platforms. These scripts are unlikely to work against switches and other hardware families.
