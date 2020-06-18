@@ -39,6 +39,12 @@ def getcurrentimage(host):
 
     return {'directory': img_dir, 'backup_image': current_imgfile}
 
+"""
+Check that both existing image and new image exist, if they do set them as boot vars.
+at a minimum set the new image, if existing image cannot be determind.
+this needs serious clean up... consider checking dir for older image and always setting it
+as backup.
+"""
 def set_boot_image(task):
     primary_img = task.host.get('img')
     #backup_img = task.host.get('backup_img')
@@ -47,7 +53,7 @@ def set_boot_image(task):
     directory = bootvars['directory']
     #print(backup_img)
 
-    if backup_img == 'none.bin':
+    if 'none' in backup_img:
         #print("\nunable to determine current image bootvar on", task.host.name)
         #print("\nproceeding without backup image on", task.host.name)
         commands = f"""
@@ -58,7 +64,7 @@ def set_boot_image(task):
     # Validate that both new and existing image are on device
     for img in (primary_img, backup_img):
         #print(img)
-        if img == 'none.bin':
+        if 'none' in img:
             #print("backup_img == none, skipping loop")
             continue
         result = task.run(
@@ -67,7 +73,7 @@ def set_boot_image(task):
             enable=True
         )
         output = result[0].result
-
+        #import ipdb; ipdb.set_trace()
         # detect error
         if output.startswith("%Error"):
             #target_routers.data.failed_hosts.add(task.host.name)
@@ -78,7 +84,7 @@ def set_boot_image(task):
             #print("\nImage not found on Device -", img)
             return False
 
-    if backup_img != 'none.bin':
+    if 'none' not in backup_img:
         commands = f"""
         default boot system
         boot system {directory} {primary_img}
