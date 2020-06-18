@@ -32,6 +32,7 @@ def main():
     nr = nr.filter(F(groups__contains="iosv"))
     print('Running iosstaging.py against the following Nornir inventory hosts:', nr.inventory.hosts.keys())
     nornir_set_creds(nr)
+    print("Starting Image Transfer")
     result = nr.run(task=os_staging)
     print_result(result)
     #import ipdb; ipdb.set_trace()
