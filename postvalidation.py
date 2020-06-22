@@ -125,5 +125,5 @@ def main():
             #ipdb.set_trace()
             prGreen("^^^ --- " + host + " --- End Comparison between Pre Upgrade and Post Upgrade configurations ^^^\n")
 
-  if __name__ == "__main__":
-      main()
+if __name__ == "__main__":
+  main()
