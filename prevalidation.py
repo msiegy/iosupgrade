@@ -26,9 +26,6 @@ config_dir = "configs/pre/"
 facts_dir = "facts/pre/"
 
 pathlib.Path(config_dir).mkdir(parents=True, exist_ok=True)
-nr = InitNornir(config_file="config.yaml")
-#Filter devices to run against
-nr = nr.filter(F(groups__contains="iosv"))
 
 def validate_storage(task):
     result = task.run(
@@ -84,10 +81,14 @@ def collect_getters(task):
             store_output(task.host.name, entry_dir, content, filename)
 
 def main():
+    nr = InitNornir(config_file="config.yaml")
+    #Filter devices to run against
+    nr = nr.filter(F(groups__contains="iosv"))
     print('Running prevalidation.py against the following Nornir inventory hosts:', nr.inventory.hosts.keys())
 
     # Ask for credentials at runtime instead of storing.
     nornir_set_creds(nr)
+
     #Connect to devices to check if there is sufficient disk space.
     storage_result = nr.run(task=validate_storage, name='Validate Storage Requirements')
     print_result(storage_result) #potentially print only True/False Result, logfile rest of output
