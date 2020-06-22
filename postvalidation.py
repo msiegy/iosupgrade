@@ -30,6 +30,8 @@ from genie.utils.diff import Diff
 def prRed(skk): print("\033[91m {}\033[00m" .format(skk))
 def prYellow(skk): print("\033[93m {}\033[00m" .format(skk))
 def prGreen(skk): print("\033[92m {}\033[00m" .format(skk))
+def prCyan(skk): print("\033[96m {}\033[00m" .format(skk)) 
+
 
 config_dir = "configs/post/"
 facts_dir = "facts/post/"
@@ -118,7 +120,8 @@ for host in nr.inventory.hosts:
         postconfig.tree()
         compare = Diff(initialconfig, postconfig)
         compare.findDiff()
-        print("#", os.path.basename(f.name), "#\n", compare)
+        prCyan("# " + os.path.basename(f.name) + " #")
+        print(compare)
         #ipdb.set_trace()
         prGreen("^^^ --- " + host + " --- End Comparison between Pre Upgrade and Post Upgrade configurations ^^^\n")
   
