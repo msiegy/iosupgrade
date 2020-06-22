@@ -105,8 +105,9 @@ for host in nr.inventory.hosts:
             print('#', filename, '#\n', compare)
         prGreen("^^^ --- " + host + " --- End Comparison between Pre Upgrade and Post Upgrade operational values ^^^\n")
 
-        prGreen("vvv --- " + host + " --- Begin Comparison between Pre Upgrade and Post Upgrade configurations vvv")
+
         for filename in os.listdir(initial_config_dir):
+            prGreen("vvv --- " + host + " --- Begin Comparison between Pre Upgrade and Post Upgrade configurations vvv")
             with open(initial_config_dir+filename, 'r') as f:
                 cfg = f.read()
             initialconfig = Config(cfg)
@@ -118,4 +119,4 @@ for host in nr.inventory.hosts:
             compare = Diff(initialconfig, postconfig)
             compare.findDiff()
             print('#', filename, '#\n', compare)
-        prGreen("^^^ --- " + host + " --- End Comparison between Pre Upgrade and Post Upgrade configurations ^^^\n")
+            prGreen("^^^ --- " + host + " --- End Comparison between Pre Upgrade and Post Upgrade configurations ^^^\n")

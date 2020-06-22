@@ -17,8 +17,8 @@ C2900:
 iosv:
   data:
     #img:  Collector-2.8.1.4-B-04.ova
-    img: c800-universalk9-mz.SPA.157-3.M6.bin
-    #img: iosv-fakeimg.txt
+    #img: c800-universalk9-mz.SPA.157-3.M6.bin
+    img: iosv-fakeimg.txt
   connection_options:
     napalm:
       extras:
