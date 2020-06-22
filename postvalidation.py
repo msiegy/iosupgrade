@@ -76,6 +76,7 @@ print('Running postvalidaiton.py against the following Nornir inventory hosts:',
 # Ask for credentials at runtime instead of storing.
 nornir_set_creds(nr)
 
+print("Collecting running configurations and operational values\n")
 resultconf = nr.run(task=collect_configs)
 resultgetters = nr.run(task=collect_getters)
 #import ipdb; ipdb.set_trace()
@@ -106,17 +107,18 @@ for host in nr.inventory.hosts:
         prGreen("^^^ --- " + host + " --- End Comparison between Pre Upgrade and Post Upgrade operational values ^^^\n")
 
 
-        for filename in os.listdir(initial_config_dir):
-            prGreen("vvv --- " + host + " --- Begin Comparison between Pre Upgrade and Post Upgrade configurations vvv")
-            with open(initial_config_dir+filename, 'r') as f:
-                cfg = f.read()
-            initialconfig = Config(cfg)
-            initialconfig.tree()
-            with open(config_dir+filename, 'r') as f:
-                cfg = f.read()
-            postconfig = Config(cfg)
-            postconfig.tree()
-            compare = Diff(initialconfig, postconfig)
-            compare.findDiff()
-            print('#', filename, '#\n', compare)
-            prGreen("^^^ --- " + host + " --- End Comparison between Pre Upgrade and Post Upgrade configurations ^^^\n")
+        prGreen("vvv --- " + host + " --- Begin Comparison between Pre Upgrade and Post Upgrade configurations vvv")
+        with open(initial_config_dir+host+'-running.cfg', 'r') as f:
+            cfg = f.read()
+        initialconfig = Config(cfg)
+        initialconfig.tree()
+        with open(config_dir+host+'-running.cfg', 'r') as f:
+            cfg = f.read()
+        postconfig = Config(cfg)
+        postconfig.tree()
+        compare = Diff(initialconfig, postconfig)
+        compare.findDiff()
+        print("#", os.path.basename(f.name), "#\n", compare)
+        #ipdb.set_trace()
+        prGreen("^^^ --- " + host + " --- End Comparison between Pre Upgrade and Post Upgrade configurations ^^^\n")
+  
