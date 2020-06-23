@@ -357,8 +357,8 @@ postconfig_dir = "configs/post/"
 postfacts_dir = "facts/post/"
 pathlib.Path(preconfig_dir).mkdir(parents=True, exist_ok=True)
 pathlib.Path(prefacts_dir).mkdir(parents=True, exist_ok=True)
-pathlib.Path(config_dir).mkdir(parents=True, exist_ok=True)
-pathlib.Path(facts_dir).mkdir(parents=True, exist_ok=True)
+pathlib.Path(postconfig_dir).mkdir(parents=True, exist_ok=True)
+pathlib.Path(postfacts_dir).mkdir(parents=True, exist_ok=True)
 
 
 if "prevalidate" in args.Action:
@@ -370,3 +370,4 @@ elif "upgrade" in args.Action:
     upgrade_ios()
 elif "postvalidate" in args.Action:
     postval()
+    ##Collect and store configs/getters needs to be addressed due to pre/post folders...
