@@ -1,4 +1,5 @@
 import argparse
+from argparse import RawTextHelpFormatter
 import os
 import logging
 import pathlib
@@ -12,16 +13,29 @@ from nornir.plugins.functions.text import print_result
 from nornir_utilities import nornir_set_creds, std_print
 from nornir.core.filter import F
 from ciscoconfparse import CiscoConfParse
-from genie.conf import Genie
-from genie.utils.config import Config
-from genie.utils.diff import Diff
+#from genie.conf import Genie
+#from genie.utils.config import Config
+#from genie.utils.diff import Diff
 import ipdb
 
-parser = argparse.ArgumentParser()
-parser.add_argument("Action", choices=["prevalidate", "stage", "upgrade", "postvalidate"])
-argroup = parser.add_mutually_exclusive_group()
-argroup.add_argument('--group', help='set device targets using a group filter referenced in the hosts.yaml file', required=False)
-argroup.add_argument('--host', help='set device targets using hostname or IP referenced in the hosts.yaml file', required=False)
+parser = argparse.ArgumentParser(
+    description="Automate the steps and validation activities in upgrading Cisco Routers",
+    allow_abbrev=True,
+    formatter_class=RawTextHelpFormatter
+    )
+parser.add_argument("Action",
+    choices=["prevalidate", "stage", "upgrade", "postvalidate"],
+    help='''
+    Prevalidate   Check storage requirements, collect configs and operational values
+    Stage         Transfer Image file defined in groups.yaml and check MD5
+    Upgrade       Update Bootvars and perform upgrade/reload
+    Postvalidate  Check version, perform diff on new configs and operationval values
+    ''',
+    metavar=''
+    )
+argroup = parser.add_mutually_exclusive_group(required=True)
+argroup.add_argument('--group', help='set device targets using a group filter referenced in the hosts.yaml file')
+argroup.add_argument('--host', help='set device targets using hostname or IP referenced in the hosts.yaml file')
 args = parser.parse_args()
 
 def prRed(skk): print("\033[91m {}\033[00m" .format(skk))
@@ -29,6 +43,9 @@ def prYellow(skk): print("\033[93m {}\033[00m" .format(skk))
 def prGreen(skk): print("\033[92m {}\033[00m" .format(skk))
 def prCyan(skk): print("\033[96m {}\033[00m" .format(skk))
 
+"""
+Utility functions used in the primary processing
+"""
 def validate_storage(task):
     result = task.run(
         task=netmiko_send_command,
@@ -81,9 +98,8 @@ def collect_getters(task, directory):
 
             store_output(task.host.name, entry_dir, content, filename)
 
-
-#use netmiko_file_transfer function within nornir. Returns Bool for File exists && valid MD5
 def os_staging(task):
+    #use netmiko_file_transfer function within nornir. Returns Bool for File exists && valid MD5
     file_name = task.host.get('img')
     result = task.run(
         task=netmiko_file_transfer,
@@ -93,8 +109,8 @@ def os_staging(task):
     )
     return result
 
-#Search running configuration for bootstatement and return image file and directory if they exist.
 def getcurrentimage(host):
+    #Search running configuration for bootstatement and return image file and directory if they exist.
     file = preconfig_dir+host+'-running.cfg'
     parse = CiscoConfParse(file, syntax='ios')
     bootstatement = parse.find_objects(r'boot system')
@@ -107,13 +123,13 @@ def getcurrentimage(host):
 
     return {'directory': img_dir, 'backup_image': current_imgfile}
 
-"""
-Check that both existing image and new image exist, if they do set them as boot vars.
-at a minimum set the new image, if existing image cannot be determind.
-this needs serious clean up... consider checking dir for older image and always setting it
-as backup.
-"""
 def set_boot_image(task):
+    """
+    Check that both existing image and new image exist, if they do set them as boot vars.
+    at a minimum set the new image, if existing image cannot be determind.
+    this needs serious clean up... consider checking dir for older image and always setting it
+    as backup.
+    """
     primary_img = task.host.get('img')
     #backup_img = task.host.get('backup_img')
     bootvars = getcurrentimage(task.host.name)
@@ -172,17 +188,20 @@ def continue_func(msg="Do you want to continue (y/n)? "):
     else:
         sys.exit()
 
-
 """
-    Prevalidate storage requirements and store baselines for running config and
-    operational states prior to OS Staging and Upgrade
-
-    Tasks:
-    1) Validate sufficient disk space based on file defined in groups.yaml
-    2) Collect and store running configurations to local machine.
-    3) Collect and store napalm getters to local machine.
+4 Main Functions - originally separate scripts.
 """
 def preval():
+    """
+        Prevalidate storage requirements and store baselines for running config and
+        operational states prior to OS Staging and Upgrade
+
+        Tasks:
+        1) Validate sufficient disk space based on file defined in groups.yaml
+        2) Collect and store running configurations to local machine.
+        3) Collect and store napalm getters to local machine.
+    """
+
     print('Running prevalidation against the following Nornir inventory hosts:', nr.inventory.hosts.keys())
     # Ask for credentials at runtime instead of storing.
     nornir_set_creds(nr)
@@ -209,30 +228,39 @@ def preval():
     result = nr.run(task=collect_getters, directory=prefacts_dir)
 
     print("Running configurations and operational state have been saved to local machine")
-    #ipdb.set_trace()
-
-
-"""
-    Transfer/Stage IOS image for router upgrade and validate MD5. Bootvars not changed.
-
-    Tasks:
-    1) Transfer image defined in groups.yaml from client to router using netmiko
-    file transfer. Idempotent transfer.
-    2) Check File exists and MD5 Hash on completion. if file exists valueerror.
-
-    Requires user with privelge level 15 (without enable) and 'ip scp server enable'
-"""
 
 def stage_firmware():
+    """
+        Transfer/Stage IOS image for router upgrade and validate MD5. Bootvars not changed.
+
+        Tasks:
+        1) Transfer image defined in groups.yaml from client to router using netmiko
+        file transfer. Idempotent transfer.
+        2) Check File exists and MD5 Hash on completion. if file exists valueerror.
+
+        Requires user with privelge level 15 (without enable) and 'ip scp server enable'
+    """
+
     print('Staging firmware against the following Nornir inventory hosts:', nr.inventory.hosts.keys())
     nornir_set_creds(nr)
     print("Starting Image Transfer")
     result = nr.run(task=os_staging)
     print_result(result)
-    #ipdb.set_trace()
-
 
 def upgrade_ios():
+    """
+        Update bootvars and perform IOS Upgrade.
+
+        Tasks:
+        1) Check if current image is defined in bootvars so we can set as backup.
+        2) Validate that both new and existing/backup image are on device.
+        3) Set boot vars so new image is primary image, previous is backup.
+        4) Output new Boot Config and Prompt for user review before continuuing
+        5) Write Mem (Confirm)
+        6) Reload Router (Confirm)
+
+    """
+
     print('Running iosupgrade.py against the following Nornir inventory hosts:', nr.inventory.hosts.keys())
 
     # Ask for credentials at runtime instead of storing.
@@ -288,9 +316,20 @@ def upgrade_ios():
             )
     print_result(result)
     print("Devices reloaded")
-    #ipdb.set_trace()
 
 def postval():
+    """
+        Post Upgrade validation - Collect and store running config and current
+        operational states post OS Upgrade and compare diffs.
+
+        Tasks:
+        1) Collect and store running configurations to local machine.
+        2) Collect and store napalm getters to local machine.
+        3) Validate running OS version meets expected value
+        4) Perform Diff on running configurations and operation states.
+        5) Perform Misc checks
+    """
+
     print('Running postvalidaiton.py against the following Nornir inventory hosts:', nr.inventory.hosts.keys())
     # Ask for credentials at runtime instead of storing.
     nornir_set_creds(nr)
@@ -342,18 +381,15 @@ def postval():
             #ipdb.set_trace()
             prGreen("^^^ --- " + host + " --- End Comparison between Pre Upgrade and Post Upgrade configurations ^^^\n")
 
-
-""" Set Nornir objects """
+""" Set Nornir objects and top level execution block """
 nr = InitNornir(config_file="config.yaml")
 #Filter devices to run against
 if args.group:
     nr = nr.filter(F(groups__contains=args.group))
 elif args.host:
     nr = nr.filter(hostname=args.host)
-else:
-    nr = nr.filter(F(groups__contains="899g"))
 
-#Set/Check environment values and folders
+#Set/Check environment values and folders, if they don't exist create them.
 preconfig_dir = "configs/pre/"
 prefacts_dir = "facts/pre/"
 postconfig_dir = "configs/post/"
