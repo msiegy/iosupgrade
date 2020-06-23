@@ -13,9 +13,9 @@ from nornir.plugins.functions.text import print_result
 from nornir_utilities import nornir_set_creds, std_print
 from nornir.core.filter import F
 from ciscoconfparse import CiscoConfParse
-#from genie.conf import Genie
-#from genie.utils.config import Config
-#from genie.utils.diff import Diff
+from genie.conf import Genie
+from genie.utils.config import Config
+from genie.utils.diff import Diff
 import ipdb
 
 parser = argparse.ArgumentParser(
@@ -398,7 +398,6 @@ pathlib.Path(preconfig_dir).mkdir(parents=True, exist_ok=True)
 pathlib.Path(prefacts_dir).mkdir(parents=True, exist_ok=True)
 pathlib.Path(postconfig_dir).mkdir(parents=True, exist_ok=True)
 pathlib.Path(postfacts_dir).mkdir(parents=True, exist_ok=True)
-
 
 if "prevalidate" in args.Action:
     preval()
