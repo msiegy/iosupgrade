@@ -25,8 +25,8 @@ The collection uses Nornir, Napalm and Genie libraries.
 
 
 #### TODO:
-- ~~Refactor four scripts into single command line tool with arguments for various stages and options.
-- ~~Add command line args for inventory filter definitions at runtime to avoid modifying scripts for different targets.
+- ~~Refactor four scripts into single command line tool with arguments for various stages and options.~~
+- ~~Add command line args for inventory filter definitions at runtime to avoid modifying scripts for different targets.~~
 - Add color formatting to output.
 - Add logfile along with output for each run
 - Add default enforcement for order of execution, with ability to bypass (i.e: prevalidation before upgrade)
