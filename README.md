@@ -38,6 +38,10 @@ The collection uses Nornir, Napalm and Genie libraries.
 - Install required python libraries (consider using venv) `pip install -r requirements.txt`
 - Edit the hosts.yaml and groups.yaml nornir inventory files to include your target routers and the location of the upgrade image.
 
+#### Run:
+- Run iosautomate.py from the command line and provide the necessary arguments.
+- Example: `python iosautomate.py prevalidation --group iosv
+
 Disclaimer: These scripts will reload devices and may cause network outages. They are provided AS IS. Test them in a lab and run them at your own risk.
 
 Tested against physical ISR routers (G2/1K/4K), C899G and virtual IOSv platforms. These scripts are unlikely to work against switches and other hardware families.
