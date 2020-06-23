@@ -17,8 +17,8 @@ import ipdb
 parser = argparse.ArgumentParser()
 parser.add_argument("Action", choices=["prevalidate", "stage", "upgrade", "postvalidate"])
 argroup = parser.add_mutually_exclusive_group()
-argroup.add_argument('--group', help='set device targets using group filter', required=False)
-argroup.add_argument('--host', help='set device targets using hostname or IP', required=False)
+argroup.add_argument('--group', help='set device targets using a group filter referenced in the hosts.yaml file', required=False)
+argroup.add_argument('--host', help='set device targets using hostname or IP referenced in the hosts.yaml file', required=False)
 args = parser.parse_args()
 
 def prRed(skk): print("\033[91m {}\033[00m" .format(skk))
@@ -49,14 +49,14 @@ def validate_storage(task):
     elif file_size < availablebytes:
         return True
 
-def collect_configs(task):
+def collect_configs(task, directory):
     config_result = task.run(task=napalm_get, getters=['config'])
     config = config_result[0].result['config']['running']
-    store_config(task.host.name, config)
+    store_config(task.host.name, directory, config)
 
-def store_config(hostname, config):
+def store_config(hostname, directory, config):
     filename = f"{hostname}-running.cfg"
-    with open(os.path.join(preconfig_dir, filename), "w") as f:
+    with open(os.path.join(directory, filename), "w") as f:
         f.write(config)
 
 def store_output(hostname, entry_dir, content, filename):
@@ -64,8 +64,8 @@ def store_output(hostname, entry_dir, content, filename):
     with open(os.path.join(entry_dir, filename), "w") as f:
         f.write(str(content))
 
-def collect_getters(task):
-    entry_dir = prefacts_dir + task.host.name
+def collect_getters(task, directory):
+    entry_dir = directory + task.host.name
     pathlib.Path(entry_dir).mkdir(exist_ok=True)
 
     facts_result = task.run(task=napalm_get, getters=['facts', 'environment', 'lldp_neighbors', 'interfaces', 'interfaces_ip'])
@@ -200,10 +200,10 @@ def preval():
     #Connect to devices and store their running configurations to local folders.
 
     print("\nCollecting running configurations and operational state from devices")
-    result = nr.run(task=collect_configs)
+    result = nr.run(task=collect_configs, directory=preconfig_dir)
 
     #Connect to devices and collect napalm getters, store to local folders.
-    result = nr.run(task=collect_getters)
+    result = nr.run(task=collect_getters, directory=prefacts_dir)
 
     print("Running configurations and operational state have been saved to local machine")
     #ipdb.set_trace()
@@ -293,8 +293,8 @@ def postval():
     nornir_set_creds(nr)
 
     print("Collecting running configurations and operational values\n")
-    resultconf = nr.run(task=collect_configs)
-    resultgetters = nr.run(task=collect_getters)
+    resultconf = nr.run(task=collect_configs, directory=postconfig_dir)
+    resultgetters = nr.run(task=collect_getters, directory=postfacts_dir)
     #import ipdb; ipdb.set_trace()
 
     #Loop through napalm getters and output current running version.
@@ -362,7 +362,6 @@ pathlib.Path(postfacts_dir).mkdir(parents=True, exist_ok=True)
 
 
 if "prevalidate" in args.Action:
-    print("you used the --prevalidate flag")
     preval()
 elif "stage" in args.Action:
     stage_firmware()
@@ -370,4 +369,3 @@ elif "upgrade" in args.Action:
     upgrade_ios()
 elif "postvalidate" in args.Action:
     postval()
-    ##Collect and store configs/getters needs to be addressed due to pre/post folders...
