@@ -40,7 +40,7 @@ The collection uses Nornir, Napalm and Genie libraries.
 
 #### Run:
 - Run iosautomate.py from the command line and provide the necessary arguments.
-- Example: `python iosautomate.py prevalidation --group iosv
+- Example: `python iosautomate.py prevalidation --group iosv`
 
 Disclaimer: These scripts will reload devices and may cause network outages. They are provided AS IS. Test them in a lab and run them at your own risk.
 
