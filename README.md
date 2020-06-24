@@ -36,6 +36,7 @@ The collection uses Nornir, Napalm and Genie libraries.
 #### Installation:
 - Clone this Repo to your local machine `git clone https://github.com/msiegy/iosupgrade.git`
 - Install required python libraries (consider using venv) `pip install -r requirements.txt`
+  <br>(the pyATS Genie library requires linux or linux on Mac/Windows, alternatively you can run a docker image of pyats as your base)
 - Edit the hosts.yaml and groups.yaml nornir inventory files to include your target routers and the location of the upgrade image.
 
 #### Run:
